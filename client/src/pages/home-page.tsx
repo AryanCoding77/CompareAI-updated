@@ -14,7 +14,12 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Camera, User as UserIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useWebSocket } from "@/hooks/use-websocket";
-import { FeedbackForm } from "@/components/feedback-form";
+
+// Placeholder FeedbackForm component
+function FeedbackForm() {
+  return <button>Give Feedback</button>;
+}
+
 
 export default function HomePage() {
   const { user, logoutMutation } = useAuth();
@@ -74,9 +79,12 @@ export default function HomePage() {
           <h1 className="text-2xl font-bold">Compare AI</h1>
           <div className="flex items-center gap-4">
             <span>Welcome, {user?.username}</span>
-            <Button variant="ghost" onClick={() => logoutMutation.mutate()}>
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <FeedbackForm />
+              <Button variant="ghost" onClick={() => logoutMutation.mutate()}>
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -242,9 +250,6 @@ export default function HomePage() {
           </CardContent>
         </Card>
       </main>
-      <footer className="fixed bottom-4 right-4">
-        <FeedbackForm />
-      </footer>
     </div>
   );
 }

@@ -13,7 +13,7 @@ export const feedback_table = pgTable("feedback", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id),
   feedback: text("feedback").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at").notNull(),
 });
 
 export const matches = pgTable("matches", {

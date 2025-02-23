@@ -12,7 +12,9 @@ const app = express();
 
 // Configure CORS
 app.use(cors({
-  origin: true,
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.REPL_SLUG 
+    : 'http://localhost:5000',
   credentials: true
 }));
 

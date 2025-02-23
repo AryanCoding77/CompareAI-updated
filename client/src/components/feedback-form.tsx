@@ -7,25 +7,41 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 export function FeedbackForm() {
   const [feedback, setFeedback] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async () => {
+    if (!feedback.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter some feedback before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const response = await fetch("/api/feedback", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: { 
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({ feedback }),
+        credentials: "include",
       });
 
-      if (!response.ok) throw new Error("Failed to submit feedback");
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
       
       toast({
         title: "Thank you!",
         description: "Your feedback has been submitted successfully.",
       });
       setFeedback("");
+      setIsOpen(false);
     } catch (error) {
+      console.error("Feedback submission error:", error);
       toast({
         title: "Error",
         description: "Failed to submit feedback. Please try again.",
@@ -35,7 +51,7 @@ export function FeedbackForm() {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Give Feedback</Button>
       </DialogTrigger>

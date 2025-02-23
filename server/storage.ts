@@ -111,6 +111,10 @@ export class DatabaseStorage implements IStorage {
       .delete(matches)
       .where(or(eq(matches.creatorId, userId), eq(matches.invitedId, userId)));
   }
+
+  async saveFeedback(userId: number, feedback: string): Promise<void> {
+    await db.insert(feedback_table).values({ userId, feedback, createdAt: new Date() });
+  }
 }
 
 export const storage = new DatabaseStorage();

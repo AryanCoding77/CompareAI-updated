@@ -15,6 +15,12 @@ import { AlertCircle, Camera, User as UserIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useWebSocket } from "@/hooks/use-websocket";
 
+// Placeholder FeedbackForm component
+function FeedbackForm() {
+  return <button>Give Feedback</button>;
+}
+
+
 export default function HomePage() {
   const { user, logoutMutation } = useAuth();
   const [, setLocation] = useLocation();
@@ -73,9 +79,12 @@ export default function HomePage() {
           <h1 className="text-2xl font-bold">Compare AI</h1>
           <div className="flex items-center gap-4">
             <span>Welcome, {user?.username}</span>
-            <Button variant="outline" onClick={() => logoutMutation.mutate()}>
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <FeedbackForm />
+              <Button variant="ghost" onClick={() => logoutMutation.mutate()}>
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>

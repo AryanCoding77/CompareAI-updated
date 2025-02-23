@@ -9,6 +9,13 @@ export const users = pgTable("users", {
   score: integer("score").notNull().default(0),
 });
 
+export const feedback_table = pgTable("feedback", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  feedback: text("feedback").notNull(),
+  createdAt: timestamp("created_at").notNull(),
+});
+
 export const matches = pgTable("matches", {
   id: serial("id").primaryKey(),
   creatorId: integer("creator_id").notNull(),

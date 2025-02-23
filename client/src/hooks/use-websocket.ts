@@ -28,10 +28,7 @@ export function useWebSocket() {
 
         switch (data.type) {
           case 'connected':
-            toast({
-              title: "Connected",
-              description: "Real-time updates enabled",
-            });
+            console.log("WebSocket connected");
             break;
           case 'match_created':
           case 'match_updated':

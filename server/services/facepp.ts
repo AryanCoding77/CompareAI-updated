@@ -10,7 +10,11 @@ async function makeRequest(formData: FormData, retryCount = 0): Promise<number> 
   try {
     const response = await fetch(`${FACEPP_API_URL}/detect`, {
       method: "POST",
-      body: formData
+      body: formData,
+      headers: {
+        'Accept': 'application/json',
+        'Max-Image-Pixels': '1166400' // Allows for 1080x1080 images
+      }
     });
 
     if (!response.ok) {

@@ -9,7 +9,7 @@ import { analyzeFace } from "./services/facepp";
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB limit
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit to accommodate larger images
   fileFilter: (_req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());

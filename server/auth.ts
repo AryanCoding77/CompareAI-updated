@@ -48,10 +48,14 @@ export function setupAuth(app: Express) {
 
   app.use(
     session({
-      secret: process.env.SESSION_SECRET || 'fallback-secret', // Ensure this is set
+      secret: process.env.SESSION_SECRET || 'fallback-secret',
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: false }, // Set to true if using HTTPS
+      cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+      }
     })
   );
 

@@ -79,12 +79,9 @@ export default function HomePage() {
           <h1 className="text-2xl font-bold">Compare AI</h1>
           <div className="flex items-center gap-4">
             <span>Welcome, {user?.username}</span>
-            <div className="flex gap-2">
-              <FeedbackForm />
-              <Button variant="ghost" onClick={() => logoutMutation.mutate()}>
-                Logout
-              </Button>
-            </div>
+            <Button variant="ghost" onClick={() => logoutMutation.mutate()}>
+              Logout
+            </Button>
           </div>
         </div>
       </header>

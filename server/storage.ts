@@ -112,8 +112,12 @@ export class DatabaseStorage implements IStorage {
       .where(or(eq(matches.creatorId, userId), eq(matches.invitedId, userId)));
   }
 
-  async saveFeedback(userId: number, feedback: string): Promise<void> {
-    await db.insert(feedback_table).values({ userId, feedback, createdAt: new Date() });
+  async saveFeedback(userId: number, feedbackText: string): Promise<void> {
+    await db.insert(feedback).values({ 
+      userId, 
+      feedback: feedbackText,
+      createdAt: new Date() 
+    });
   }
 }
 

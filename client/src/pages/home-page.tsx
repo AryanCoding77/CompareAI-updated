@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Camera, User as UserIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useWebSocket } from "@/hooks/use-websocket";
-import { FeedbackForm } from "@/components/feedback-form";
+
 
 export default function HomePage() {
   const { user, logoutMutation } = useAuth();
@@ -242,9 +242,6 @@ export default function HomePage() {
           </CardContent>
         </Card>
       </main>
-      <footer className="fixed bottom-4 right-4">
-        <FeedbackForm />
-      </footer>
     </div>
   );
 }

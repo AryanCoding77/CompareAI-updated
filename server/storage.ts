@@ -18,6 +18,7 @@ export interface IStorage {
   updateMatch(id: number, data: Partial<Match>): Promise<Match>;
   getUserMatches(userId: number): Promise<Match[]>;
   getLeaderboard(): Promise<User[]>;
+  saveFeedback(userId: number, feedback: string): Promise<void>;
   sessionStore: session.Store;
 }
 
@@ -99,11 +100,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getLeaderboard(): Promise<User[]> {
-    return db
-      .select()
-      .from(users)
-      .orderBy(desc(users.score))
-      .limit(10);
+    return db.select().from(users).orderBy(desc(users.score)).limit(10);
+  }
+
+  async saveFeedback(userId: number, feedback: string): Promise<void> {
+    await db.insert(feedback).values({ 
+      userId,
+      feedback,
+      createdAt: new Date()
+    });
   }
 
   async deleteUserMatches(userId: number): Promise<void> {
@@ -112,7 +117,7 @@ export class DatabaseStorage implements IStorage {
       .where(or(eq(matches.creatorId, userId), eq(matches.invitedId, userId)));
   }
 
-  
+
 }
 
 export const storage = new DatabaseStorage();

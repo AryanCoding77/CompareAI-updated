@@ -97,10 +97,10 @@ export function registerRoutes(app: Express): Server {
         console.log('Analyzing creator photo...');
         const creatorScore = await analyzeFace(match.creatorPhoto);
         console.log('Creator photo analysis complete:', creatorScore);
-        
+
         // Add a small delay between requests to avoid rate limiting
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         console.log('Analyzing invited photo...');
         const invitedScore = await analyzeFace(match.invitedPhoto!);
         console.log('Invited photo analysis complete:', invitedScore);
@@ -157,11 +157,18 @@ export function registerRoutes(app: Express): Server {
     res.json(leaderboard);
   });
 
-  // Delete all matches for a user
-  app.delete("/api/matches", async (req, res) => {
+  app.post("/api/feedback", async (req, res) => {
     if (!req.user) return res.sendStatus(401);
-    await storage.deleteUserMatches(req.user.id);
-    res.sendStatus(200);
+    try {
+      if (!req.body.feedback) {
+        return res.status(400).json({ message: "Feedback is required" });
+      }
+      await storage.saveFeedback(req.user.id, req.body.feedback);
+      res.json({ message: "Feedback submitted successfully" });
+    } catch (error) {
+      console.error("Error saving feedback:", error);
+      res.status(500).json({ message: "Failed to submit feedback" });
+    }
   });
 
   const httpServer = createServer(app);

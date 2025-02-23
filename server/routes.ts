@@ -94,10 +94,16 @@ export function registerRoutes(app: Express): Server {
       if (match.status !== "ready") return res.status(400).send("Match not ready for comparison");
 
       try {
+        console.log('Analyzing creator photo...');
         const creatorScore = await analyzeFace(match.creatorPhoto);
+        console.log('Creator photo analysis complete:', creatorScore);
+        
         // Add a small delay between requests to avoid rate limiting
         await new Promise(resolve => setTimeout(resolve, 500));
+        
+        console.log('Analyzing invited photo...');
         const invitedScore = await analyzeFace(match.invitedPhoto!);
+        console.log('Invited photo analysis complete:', invitedScore);
 
         const winner = creatorScore > invitedScore ? match.creatorId : match.invitedId;
         await storage.updateUserScore(winner);

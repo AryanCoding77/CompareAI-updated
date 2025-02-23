@@ -159,11 +159,16 @@ export function registerRoutes(app: Express): Server {
   });
 
   app.post("/api/feedback", async (req, res) => {
-    if (!req.user) return res.sendStatus(401);
-    const { feedback } = req.body;
-    if (!feedback) return res.status(400).send("Feedback is required");
-    await storage.saveFeedback(req.user.id, feedback);
-    res.sendStatus(200);
+    try {
+      if (!req.user) return res.sendStatus(401);
+      const { feedback } = req.body;
+      if (!feedback) return res.status(400).send("Feedback is required");
+      await storage.saveFeedback(req.user.id, feedback);
+      res.status(200).json({ message: "Feedback submitted successfully" });
+    } catch (error) {
+      console.error('Feedback submission error:', error);
+      res.status(500).json({ message: "Failed to submit feedback" });
+    }
   });
 
   const httpServer = createServer(app);

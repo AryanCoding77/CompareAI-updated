@@ -105,6 +105,12 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(users.score))
       .limit(10);
   }
+
+  async deleteUserMatches(userId: number): Promise<void> {
+    await db
+      .delete(matches)
+      .where(or(eq(matches.creatorId, userId), eq(matches.invitedId, userId)));
+  }
 }
 
 export const storage = new DatabaseStorage();

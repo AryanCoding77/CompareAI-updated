@@ -136,6 +136,13 @@ export function registerRoutes(app: Express): Server {
     res.json(leaderboard);
   });
 
+  // Delete all matches for a user
+  app.delete("/api/matches", async (req, res) => {
+    if (!req.user) return res.sendStatus(401);
+    await storage.deleteUserMatches(req.user.id);
+    res.sendStatus(200);
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

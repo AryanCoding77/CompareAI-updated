@@ -150,7 +150,24 @@ export default function HomePage() {
 
         <Card className="mt-8">
           <CardHeader>
-            <CardTitle>Your Matches</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle>Your Matches</CardTitle>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={async () => {
+                  if (confirm("Are you sure you want to delete all your matches? This cannot be undone.")) {
+                    await fetch("/api/matches", { 
+                      method: "DELETE",
+                      credentials: "include"
+                    });
+                    window.location.reload();
+                  }
+                }}
+              >
+                Delete All Matches
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="pending">

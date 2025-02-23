@@ -14,12 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Camera, User as UserIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useWebSocket } from "@/hooks/use-websocket";
-
-// Placeholder FeedbackForm component
-function FeedbackForm() {
-  return <button>Give Feedback</button>;
-}
-
+import { FeedbackForm } from "@/components/feedback-form";
 
 export default function HomePage() {
   const { user, logoutMutation } = useAuth();

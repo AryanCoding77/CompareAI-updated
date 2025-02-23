@@ -250,6 +250,9 @@ export default function HomePage() {
           </CardContent>
         </Card>
       </main>
+      <footer className="fixed bottom-4 right-4">
+        <FeedbackForm />
+      </footer>
     </div>
   );
 }

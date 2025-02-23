@@ -9,7 +9,7 @@ import { analyzeFace } from "./services/facepp";
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB limit
   fileFilter: (_req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
@@ -20,13 +20,28 @@ const upload = multer({
       cb(new Error("Only jpeg, jpg and png files are allowed"));
     }
   }
-});
+}).single('photo');
+
+// Custom error handling middleware for multer
+const uploadMiddleware = (req: any, res: any, next: any) => {
+  upload(req, res, (err: any) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ message: 'File is too large. Maximum size is 25MB' });
+      }
+      return res.status(400).json({ message: err.message });
+    } else if (err) {
+      return res.status(400).json({ message: err.message });
+    }
+    next();
+  });
+};
 
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
 
   // Create a new match
-  app.post("/api/matches", upload.single("photo"), async (req, res) => {
+  app.post("/api/matches", uploadMiddleware, async (req, res) => {
     if (!req.user) return res.sendStatus(401);
     if (!req.file) return res.status(400).send("No photo uploaded");
 
@@ -45,7 +60,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Accept/decline match invitation
-  app.post("/api/matches/:id/respond", upload.single("photo"), async (req, res) => {
+  app.post("/api/matches/:id/respond", uploadMiddleware, async (req, res) => {
     if (!req.user) return res.sendStatus(401);
 
     const match = await storage.getMatch(parseInt(req.params.id));

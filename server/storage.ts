@@ -20,6 +20,8 @@ export interface IStorage {
   getLeaderboard(): Promise<User[]>;
   saveFeedback(userId: number, feedback: string): Promise<void>;
   sessionStore: session.Store;
+  updateUser(id: number, data: Partial<User>): Promise<User | undefined>;
+  deleteUser(id: number): Promise<void>;
 }
 
 declare global {
@@ -61,7 +63,6 @@ export class DatabaseStorage implements IStorage {
 
   async createMatch(match: Omit<Match, "id">): Promise<Match> {
     const [newMatch] = await db.insert(matches).values(match).returning();
-    // Broadcast the new match to all connected clients
     (global as any).app?.broadcast({
       type: 'match_created',
       match: newMatch
@@ -83,7 +84,6 @@ export class DatabaseStorage implements IStorage {
 
     if (!updatedMatch) throw new Error("Match not found");
 
-    // Broadcast the match update to all connected clients
     (global as any).app?.broadcast({
       type: 'match_updated',
       match: updatedMatch
@@ -117,7 +117,17 @@ export class DatabaseStorage implements IStorage {
       .where(or(eq(matches.creatorId, userId), eq(matches.invitedId, userId)));
   }
 
+  async updateUser(id: number, data: Partial<User>): Promise<User | undefined> {
+    const [user] = await db.update(users)
+      .set(data)
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
 
+  async deleteUser(id: number): Promise<void> {
+    await db.delete(users).where(eq(users.id, id));
+  }
 }
 
 export const storage = new DatabaseStorage();

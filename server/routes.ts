@@ -6,6 +6,7 @@ import { insertMatchSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import { analyzeFace } from "./services/facepp";
+import { hashPassword } from './utils'; // Assuming this function exists elsewhere
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -174,6 +175,55 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error("Error saving feedback:", error);
       res.status(500).json({ message: "Failed to submit feedback" });
+    }
+  });
+
+  app.get("/api/user", (req, res) => {
+    if (!req.isAuthenticated) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    res.json(req.user);
+  });
+
+  app.post("/api/user/update", async (req, res) => {
+    if (!req.isAuthenticated) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    try {
+      const { username, password } = req.body;
+      if (username) {
+        const existingUser = await storage.getUserByUsername(username);
+        if (existingUser && existingUser.id !== req.user.id) {
+          return res.status(400).json({ message: "Username already taken" });
+        }
+      }
+
+      const updatedUser = await storage.updateUser(req.user.id, {
+        ...(username && { username }),
+        ...(password && { password: await hashPassword(password) })
+      });
+
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
+  app.post("/api/user/delete", async (req, res) => {
+    if (!req.isAuthenticated) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    try {
+      await storage.deleteUserMatches(req.user.id);
+      await storage.deleteUser(req.user.id);
+      req.logout((err) => {
+        if (err) return res.status(500).json({ message: "Error during logout" });
+        res.sendStatus(200);
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete user" });
     }
   });
 

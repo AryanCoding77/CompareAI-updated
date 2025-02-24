@@ -110,6 +110,7 @@ function RegisterForm() {
     defaultValues: {
       username: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -128,6 +129,14 @@ function RegisterForm() {
           placeholder="Password"
           {...form.register("password")}
         />
+        <Input
+          type="password"
+          placeholder="Confirm Password"
+          {...form.register("confirmPassword")}
+        />
+        {form.formState.errors.confirmPassword && (
+          <p className="text-sm text-red-500">{form.formState.errors.confirmPassword.message}</p>
+        )}
         <Button
           type="submit"
           className="w-full"

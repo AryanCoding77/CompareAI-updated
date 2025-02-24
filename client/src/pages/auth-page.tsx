@@ -76,42 +76,21 @@ function LoginForm() {
     },
   });
 
-  const onSubmit = (data) => {
-      loginMutation.mutate(data, {
-          onError: (error) => {
-              form.setError("general", {
-                  type: "manual",
-                  message: "Incorrect username or password"
-              });
-          }
-      });
-  };
-
-
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit((data) => loginMutation.mutate(data))}
         className="space-y-4 mt-4"
       >
         <Input
           placeholder="Username"
           {...form.register("username")}
         />
-        {form.formState.errors.username && (
-          <p className="text-sm text-red-500">{form.formState.errors.username.message}</p>
-        )}
         <Input
           type="password"
           placeholder="Password"
           {...form.register("password")}
         />
-        {form.formState.errors.password && (
-          <p className="text-sm text-red-500">{form.formState.errors.password.message}</p>
-        )}
-        {form.formState.errors.general && (
-          <p className="text-sm text-red-500">{form.formState.errors.general.message}</p>
-        )}
         <Button
           type="submit"
           className="w-full"

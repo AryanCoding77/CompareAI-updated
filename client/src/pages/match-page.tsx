@@ -208,18 +208,34 @@ export default function MatchPage() {
                 </AlertDescription>
               </Alert>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <h3 className="font-bold">Your Score</h3>
-                  <p className="text-2xl">
-                    {formatScore(isCreator ? match.creatorScore : match.invitedScore)}
-                  </p>
-                </div>
-                <div className="text-center">
-                  <h3 className="font-bold">Their Score</h3>
-                  <p className="text-2xl">
-                    {formatScore(isCreator ? match.invitedScore : match.creatorScore)}
-                  </p>
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <h3 className="font-bold">Your Score</h3>
+                    <p className="text-2xl">
+                      {formatScore(isCreator ? match.creatorScore : match.invitedScore)}
+                    </p>
+                    <div className="mt-4 aspect-square overflow-hidden rounded-lg">
+                      <img 
+                        src={`data:image/jpeg;base64,${isCreator ? match.creatorPhoto : match.invitedPhoto}`}
+                        alt="Your photo"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-bold">Their Score</h3>
+                    <p className="text-2xl">
+                      {formatScore(isCreator ? match.invitedScore : match.creatorScore)}
+                    </p>
+                    <div className="mt-4 aspect-square overflow-hidden rounded-lg">
+                      <img 
+                        src={`data:image/jpeg;base64,${isCreator ? match.invitedPhoto : match.creatorPhoto}`}
+                        alt="Their photo"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </>

@@ -148,7 +148,13 @@ export function registerRoutes(app: Express): Server {
       return res.status(403).send("Not authorized");
     }
 
-    res.json(match);
+    // Only include photos if match is completed
+    const responseMatch = match.status === "completed" ? match : {
+      ...match,
+      creatorPhoto: undefined,
+      invitedPhoto: undefined
+    };
+    res.json(responseMatch);
   });
 
   // Get leaderboard

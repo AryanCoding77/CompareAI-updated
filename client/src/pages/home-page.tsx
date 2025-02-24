@@ -106,23 +106,13 @@ export default function HomePage() {
                     className="mb-2"
                   />
                   {selectedFile && (
-                    <div className="space-y-4">
-                      <Alert>
-                        <Camera className="h-4 w-4" />
-                        <AlertTitle>Photo selected</AlertTitle>
-                        <AlertDescription>
-                          {selectedFile.name}
-                        </AlertDescription>
-                      </Alert>
-                      
-                      <div className="aspect-square overflow-hidden rounded-lg">
-                        <img 
-                          src={URL.createObjectURL(selectedFile)} 
-                          alt="Selected photo preview" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </div>
+                    <Alert>
+                      <Camera className="h-4 w-4" />
+                      <AlertTitle>Photo selected</AlertTitle>
+                      <AlertDescription>
+                        {selectedFile.name}
+                      </AlertDescription>
+                    </Alert>
                   )}
                 </div>
 

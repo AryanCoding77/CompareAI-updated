@@ -6,8 +6,6 @@ import { insertMatchSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import { analyzeFace } from "./services/facepp";
-import { hashPassword } from './utils'; // Assuming this function exists elsewhere
-import passport from 'passport'; // Assuming passport is used for authentication
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -41,21 +39,6 @@ const uploadMiddleware = (req: any, res: any, next: any) => {
 
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
-
-  // Add login route
-  app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
-      if (err) return next(err);
-      if (!user) {
-        return res.status(401).json({ message: "Invalid username or password" });
-      }
-      req.login(user, (err) => {
-        if (err) return next(err);
-        res.status(200).json(user);
-      });
-    })(req, res, next);
-  });
-
 
   // Create a new match
   app.post("/api/matches", uploadMiddleware, async (req, res) => {
@@ -165,13 +148,7 @@ export function registerRoutes(app: Express): Server {
       return res.status(403).send("Not authorized");
     }
 
-    // Only include photos if match is completed
-    const responseMatch = match.status === "completed" ? match : {
-      ...match,
-      creatorPhoto: undefined,
-      invitedPhoto: undefined
-    };
-    res.json(responseMatch);
+    res.json(match);
   });
 
   // Get leaderboard
@@ -191,55 +168,6 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error("Error saving feedback:", error);
       res.status(500).json({ message: "Failed to submit feedback" });
-    }
-  });
-
-  app.get("/api/user", (req, res) => {
-    if (!req.isAuthenticated) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
-    res.json(req.user);
-  });
-
-  app.post("/api/user/update", async (req, res) => {
-    if (!req.isAuthenticated) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
-
-    try {
-      const { username, password } = req.body;
-      if (username) {
-        const existingUser = await storage.getUserByUsername(username);
-        if (existingUser && existingUser.id !== req.user.id) {
-          return res.status(400).json({ message: "Username already taken" });
-        }
-      }
-
-      const updatedUser = await storage.updateUser(req.user.id, {
-        ...(username && { username }),
-        ...(password && { password: await hashPassword(password) })
-      });
-
-      res.json(updatedUser);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to update user" });
-    }
-  });
-
-  app.post("/api/user/delete", async (req, res) => {
-    if (!req.isAuthenticated) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
-
-    try {
-      await storage.deleteUserMatches(req.user.id);
-      await storage.deleteUser(req.user.id);
-      req.logout((err) => {
-        if (err) return res.status(500).json({ message: "Error during logout" });
-        res.sendStatus(200);
-      });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to delete user" });
     }
   });
 

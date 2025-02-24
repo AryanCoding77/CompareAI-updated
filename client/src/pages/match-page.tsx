@@ -125,23 +125,13 @@ export default function MatchPage() {
               />
 
               {selectedFile && (
-                <div className="space-y-4">
-                  <Alert>
-                    <Camera className="h-4 w-4" />
-                    <AlertTitle>Photo selected</AlertTitle>
-                    <AlertDescription>
-                      {selectedFile.name}
-                    </AlertDescription>
-                  </Alert>
-                  
-                  <div className="aspect-square overflow-hidden rounded-lg">
-                    <img 
-                      src={URL.createObjectURL(selectedFile)} 
-                      alt="Selected photo preview" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
+                <Alert>
+                  <Camera className="h-4 w-4" />
+                  <AlertTitle>Photo selected</AlertTitle>
+                  <AlertDescription>
+                    {selectedFile.name}
+                  </AlertDescription>
+                </Alert>
               )}
 
               <div className="flex gap-2">
@@ -218,34 +208,18 @@ export default function MatchPage() {
                 </AlertDescription>
               </Alert>
 
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center">
-                    <h3 className="font-bold">Your Score</h3>
-                    <p className="text-2xl">
-                      {formatScore(isCreator ? match.creatorScore : match.invitedScore)}
-                    </p>
-                    <div className="mt-4 aspect-square overflow-hidden rounded-lg">
-                      <img 
-                        src={`data:image/jpeg;base64,${isCreator ? match.creatorPhoto : match.invitedPhoto}`}
-                        alt="Your photo"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <h3 className="font-bold">Their Score</h3>
-                    <p className="text-2xl">
-                      {formatScore(isCreator ? match.invitedScore : match.creatorScore)}
-                    </p>
-                    <div className="mt-4 aspect-square overflow-hidden rounded-lg">
-                      <img 
-                        src={`data:image/jpeg;base64,${isCreator ? match.invitedPhoto : match.creatorPhoto}`}
-                        alt="Their photo"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <h3 className="font-bold">Your Score</h3>
+                  <p className="text-2xl">
+                    {formatScore(isCreator ? match.creatorScore : match.invitedScore)}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <h3 className="font-bold">Their Score</h3>
+                  <p className="text-2xl">
+                    {formatScore(isCreator ? match.invitedScore : match.creatorScore)}
+                  </p>
                 </div>
               </div>
             </>

@@ -155,6 +155,16 @@ var DatabaseStorage = class {
   async getLeaderboard() {
     return db.select().from(users).orderBy(desc(users.score)).limit(10);
   }
+  async saveFeedback(userId, feedback) {
+    await db.insert(feedback).values({
+      userId,
+      feedback,
+      createdAt: /* @__PURE__ */ new Date()
+    });
+  }
+  async deleteUserMatches(userId) {
+    await db.delete(matches).where(or(eq(matches.creatorId, userId), eq(matches.invitedId, userId)));
+  }
 };
 var storage = new DatabaseStorage();
 
@@ -190,11 +200,14 @@ function setupAuth(app2) {
   app2.use(
     session2({
       secret: process.env.SESSION_SECRET || "fallback-secret",
-      // Ensure this is set
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: false }
-      // Set to true if using HTTPS
+      cookie: {
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1e3
+        // 30 days
+      }
     })
   );
   app2.use(session2(sessionSettings));
@@ -284,7 +297,12 @@ async function makeRequest(formData, retryCount = 0) {
   try {
     const response = await fetch(`${FACEPP_API_URL}/detect`, {
       method: "POST",
-      body: formData
+      body: formData,
+      headers: {
+        "Accept": "application/json",
+        "Max-Image-Pixels": "1166400"
+        // Allows for 1080x1080 images
+      }
     });
     if (!response.ok) {
       const error = await response.text();
@@ -323,8 +341,8 @@ async function analyzeFace(photoBase64) {
 // server/routes.ts
 var upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 },
-  // 10MB limit
+  limits: { fileSize: 50 * 1024 * 1024 },
+  // 50MB limit to accommodate larger images
   fileFilter: (_req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
@@ -335,10 +353,23 @@ var upload = multer({
       cb(new Error("Only jpeg, jpg and png files are allowed"));
     }
   }
-});
+}).single("photo");
+var uploadMiddleware = (req, res, next) => {
+  upload(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res.status(400).json({ message: "File is too large. Maximum size is 25MB" });
+      }
+      return res.status(400).json({ message: err.message });
+    } else if (err) {
+      return res.status(400).json({ message: err.message });
+    }
+    next();
+  });
+};
 function registerRoutes(app2) {
   setupAuth(app2);
-  app2.post("/api/matches", upload.single("photo"), async (req, res) => {
+  app2.post("/api/matches", uploadMiddleware, async (req, res) => {
     if (!req.user) return res.sendStatus(401);
     if (!req.file) return res.status(400).send("No photo uploaded");
     const invitedUser = await storage.getUserByUsername(req.body.invitedUsername);
@@ -352,7 +383,7 @@ function registerRoutes(app2) {
     });
     res.json(match);
   });
-  app2.post("/api/matches/:id/respond", upload.single("photo"), async (req, res) => {
+  app2.post("/api/matches/:id/respond", uploadMiddleware, async (req, res) => {
     if (!req.user) return res.sendStatus(401);
     const match = await storage.getMatch(parseInt(req.params.id));
     if (!match) return res.status(404).send("Match not found");
@@ -377,9 +408,13 @@ function registerRoutes(app2) {
       if (match.creatorId !== req.user.id) return res.status(403).send("Not authorized");
       if (match.status !== "ready") return res.status(400).send("Match not ready for comparison");
       try {
+        console.log("Analyzing creator photo...");
         const creatorScore = await analyzeFace(match.creatorPhoto);
+        console.log("Creator photo analysis complete:", creatorScore);
         await new Promise((resolve) => setTimeout(resolve, 500));
+        console.log("Analyzing invited photo...");
         const invitedScore = await analyzeFace(match.invitedPhoto);
+        console.log("Invited photo analysis complete:", invitedScore);
         const winner = creatorScore > invitedScore ? match.creatorId : match.invitedId;
         await storage.updateUserScore(winner);
         await storage.updateMatch(match.id, {
@@ -418,6 +453,19 @@ function registerRoutes(app2) {
   app2.get("/api/leaderboard", async (req, res) => {
     const leaderboard = await storage.getLeaderboard();
     res.json(leaderboard);
+  });
+  app2.post("/api/feedback", async (req, res) => {
+    if (!req.user) return res.sendStatus(401);
+    try {
+      if (!req.body.feedback) {
+        return res.status(400).json({ message: "Feedback is required" });
+      }
+      await storage.saveFeedback(req.user.id, req.body.feedback);
+      res.json({ message: "Feedback submitted successfully" });
+    } catch (error) {
+      console.error("Error saving feedback:", error);
+      res.status(500).json({ message: "Failed to submit feedback" });
+    }
   });
   const httpServer = createServer(app2);
   return httpServer;
@@ -529,7 +577,7 @@ dotenv.config();
 var app = express2();
 global.app = app;
 app.use(cors({
-  origin: process.env.NODE_ENV === "production" ? process.env.REPL_SLUG : "http://localhost:5000",
+  origin: true,
   credentials: true
 }));
 app.use(express2.json());

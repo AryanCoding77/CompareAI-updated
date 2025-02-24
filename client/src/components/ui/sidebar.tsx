@@ -284,6 +284,27 @@ const SidebarTrigger = React.forwardRef<
 })
 SidebarTrigger.displayName = "SidebarTrigger"
 
+const SidebarSettings = React.forwardRef<
+  React.ElementRef<typeof Button>,
+  React.ComponentProps<typeof Button>
+>(({ className, onClick, ...props }, ref) => {
+  return (
+    <Button
+      ref={ref}
+      data-sidebar="settings"
+      variant="ghost"
+      size="icon"
+      className={cn("h-7 w-7", className)}
+      onClick={onClick}
+      {...props}
+    >
+      <Settings className="h-4 w-4" />
+      <span className="sr-only">Settings</span>
+    </Button>
+  )
+})
+SidebarSettings.displayName = "SidebarSettings"
+
 const SidebarRail = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<"button">
@@ -758,5 +779,6 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
+  SidebarSettings,
   useSidebar,
 }

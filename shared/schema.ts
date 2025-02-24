@@ -27,11 +27,19 @@ export const insertUserSchema = createInsertSchema(users)
     password: true,
   })
   .extend({
-    confirmPassword: z.string(),
+    confirmPassword: z.string().min(1, "Confirm password is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
+  })
+  .refine((data) => data.username.length > 0, {
+    message: "Username is required",
+    path: ["username"],
+  })
+  .refine((data) => data.password.length > 0, {
+    message: "Password is required",
+    path: ["password"],
   });
 
 export const insertMatchSchema = createInsertSchema(matches);

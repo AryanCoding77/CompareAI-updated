@@ -7,6 +7,7 @@ import multer from "multer";
 import path from "path";
 import { analyzeFace } from "./services/facepp";
 import { hashPassword } from './utils'; // Assuming this function exists elsewhere
+import passport from 'passport'; // Assuming passport is used for authentication
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -40,6 +41,21 @@ const uploadMiddleware = (req: any, res: any, next: any) => {
 
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
+
+  // Add login route
+  app.post("/api/login", (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) return next(err);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+      req.login(user, (err) => {
+        if (err) return next(err);
+        res.status(200).json(user);
+      });
+    })(req, res, next);
+  });
+
 
   // Create a new match
   app.post("/api/matches", uploadMiddleware, async (req, res) => {

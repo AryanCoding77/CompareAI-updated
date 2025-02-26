@@ -106,13 +106,22 @@ export default function HomePage() {
                     className="mb-2"
                   />
                   {selectedFile && (
-                    <Alert>
-                      <Camera className="h-4 w-4" />
-                      <AlertTitle>Photo selected</AlertTitle>
-                      <AlertDescription>
-                        {selectedFile.name}
-                      </AlertDescription>
-                    </Alert>
+                    <div className="space-y-2">
+                      <Alert>
+                        <Camera className="h-4 w-4" />
+                        <AlertTitle>Photo selected</AlertTitle>
+                        <AlertDescription>
+                          {selectedFile.name}
+                        </AlertDescription>
+                      </Alert>
+                      <div className="rounded-md overflow-hidden w-32 h-32">
+                        <img 
+                          src={URL.createObjectURL(selectedFile)} 
+                          alt="Preview" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
                   )}
                 </div>
 
@@ -158,11 +167,24 @@ export default function HomePage() {
                 size="sm"
                 onClick={async () => {
                   if (confirm("Are you sure you want to delete all your matches? This cannot be undone.")) {
-                    await fetch("/api/matches", { 
-                      method: "DELETE",
-                      credentials: "include"
-                    });
-                    window.location.reload();
+                    try {
+                      const response = await fetch("/api/matches", { 
+                        method: "DELETE",
+                        credentials: "include"
+                      });
+                      if (!response.ok) throw new Error("Failed to delete matches");
+                      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+                      toast({
+                        title: "Success",
+                        description: "All matches have been deleted",
+                      });
+                    } catch (error) {
+                      toast({
+                        title: "Error",
+                        description: "Failed to delete matches",
+                        variant: "destructive"
+                      });
+                    }
                   }
                 }}
               >

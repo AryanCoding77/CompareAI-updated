@@ -111,23 +111,41 @@ function RegisterForm() {
       username: "",
       password: "",
     },
+    mode: "onSubmit"
   });
+
+  const onSubmit = async (data: any) => {
+    if (!data.username || !data.password) {
+      return;
+    }
+    registerMutation.mutate(data);
+  };
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((data) => registerMutation.mutate(data))}
+        onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 mt-4"
       >
-        <Input
-          placeholder="Username"
-          {...form.register("username")}
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          {...form.register("password")}
-        />
+        <div className="space-y-2">
+          <Input
+            placeholder="Username"
+            {...form.register("username")}
+          />
+          {form.formState.errors.username && (
+            <p className="text-sm text-red-500">{form.formState.errors.username.message}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Input
+            type="password"
+            placeholder="Password"
+            {...form.register("password")}
+          />
+          {form.formState.errors.password && (
+            <p className="text-sm text-red-500">{form.formState.errors.password.message}</p>
+          )}
+        </div>
         <Button
           type="submit"
           className="w-full"

@@ -8,11 +8,13 @@ import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import HomePage from "@/pages/home-page";
 import MatchPage from "@/pages/match-page";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 
 function Router() {
   return (
     <Switch>
       <Route path="/auth" component={AuthPage} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
       <ProtectedRoute path="/" component={HomePage} />
       <ProtectedRoute path="/match/:id" component={MatchPage} />
       <Route component={NotFound} />

@@ -26,6 +26,9 @@ export const insertUserSchema = createInsertSchema(users)
     username: true,
     password: true,
   })
+  .extend({
+    acceptPolicy: z.boolean()
+  })
   .refine((data) => data.username.length > 0, {
     message: "Username is required",
     path: ["username"],
@@ -33,6 +36,10 @@ export const insertUserSchema = createInsertSchema(users)
   .refine((data) => data.password.length > 0, {
     message: "Password is required",
     path: ["password"],
+  })
+  .refine((data) => data.acceptPolicy === true, {
+    message: "You must accept the privacy policy",
+    path: ["acceptPolicy"],
   });
 
 export const insertMatchSchema = createInsertSchema(matches);

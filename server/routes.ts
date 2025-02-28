@@ -160,7 +160,8 @@ export function registerRoutes(app: Express): Server {
 
   // Get leaderboard
   app.get("/api/leaderboard", async (req, res) => {
-    const leaderboard = await storage.getLeaderboard();
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+    const leaderboard = await storage.getLeaderboard(limit);
     res.json(leaderboard);
   });
 

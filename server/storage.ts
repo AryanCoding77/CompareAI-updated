@@ -17,9 +17,10 @@ export interface IStorage {
   getMatch(id: number): Promise<Match | undefined>;
   updateMatch(id: number, data: Partial<Match>): Promise<Match>;
   getUserMatches(userId: number): Promise<Match[]>;
-  getLeaderboard(): Promise<User[]>;
+  getLeaderboard(limit?: number): Promise<User[]>;
   saveFeedback(userId: number, feedback: string): Promise<void>;
   sessionStore: session.Store;
+  deleteUserMatches(userId: number): Promise<void>;
 }
 
 declare global {
@@ -99,8 +100,8 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(matches.createdAt));
   }
 
-  async getLeaderboard(): Promise<User[]> {
-    return db.select().from(users).orderBy(desc(users.score)).limit(10);
+  async getLeaderboard(limit = 100): Promise<User[]> {
+    return db.select().from(users).orderBy(desc(users.score)).limit(limit);
   }
 
   async saveFeedback(userId: number, feedback: string): Promise<void> {

@@ -140,7 +140,16 @@ const Carousel = React.forwardRef<
           aria-roledescription="carousel"
           {...props}
         >
-          {children}
+          {React.Children.map(children, child => {
+            if (React.isValidElement(child) && child.type === 'img') {
+              return React.cloneElement(child, {
+                loading: 'lazy',
+                decoding: 'async',
+                ...child.props
+              });
+            }
+            return child;
+          })}
         </div>
       </CarouselContext.Provider>
     )

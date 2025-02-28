@@ -30,6 +30,7 @@ __export(schema_exports, {
 });
 import { pgTable, text, serial, integer, timestamp, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
 var users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
@@ -50,6 +51,17 @@ var matches = pgTable("matches", {
 var insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true
+}).extend({
+  acceptPolicy: z.boolean()
+}).refine((data) => data.username.length > 0, {
+  message: "Username is required",
+  path: ["username"]
+}).refine((data) => data.password.length > 0, {
+  message: "Password is required",
+  path: ["password"]
+}).refine((data) => data.acceptPolicy === true, {
+  message: "You must accept the privacy policy",
+  path: ["acceptPolicy"]
 });
 var insertMatchSchema = createInsertSchema(matches);
 
@@ -440,6 +452,11 @@ function registerRoutes(app2) {
     if (!req.user) return res.sendStatus(401);
     const matches2 = await storage.getUserMatches(req.user.id);
     res.json(matches2);
+  });
+  app2.delete("/api/matches", async (req, res) => {
+    if (!req.user) return res.sendStatus(401);
+    await storage.deleteUserMatches(req.user.id);
+    res.sendStatus(200);
   });
   app2.get("/api/matches/:id", async (req, res) => {
     if (!req.user) return res.sendStatus(401);

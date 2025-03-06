@@ -32,7 +32,6 @@ export default function LandingPage() {
           <div className="flex items-center space-x-6">
             <nav className="hidden md:flex items-center space-x-6">
               <a href="#features" className="text-sm font-medium">Features</a>
-              <a href="#how-it-works" className="text-sm font-medium">How It Works</a>
               <a href="#leaderboard" className="text-sm font-medium">Leaderboard</a>
             </nav>
             <Button onClick={handleLoginClick} className="bg-[#0084ff] hover:bg-[#0068cc]">Try Now</Button>

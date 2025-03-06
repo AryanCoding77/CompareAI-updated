@@ -18,7 +18,7 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (user) {
-      setLocation("/");
+      setLocation("/home");
     }
   }, [user, setLocation]);
 
@@ -46,7 +46,7 @@ export default function AuthPage() {
           </CardContent>
         </Card>
       </div>
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary/20 to-primary/30 items-center justify-center p-8">
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-[#e7f2ff] to-[#f0f7ff] items-center justify-center p-8">
         <div className="max-w-md text-center">
           <h1 className="text-4xl font-bold mb-4">Compare AI</h1>
           <p className="text-lg text-gray-600">

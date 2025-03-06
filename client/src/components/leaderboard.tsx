@@ -33,7 +33,7 @@ export function Leaderboard({ limit = 5, showViewMore = true }: LeaderboardProps
             <span className="font-medium">#{index + 1}</span>
             <span>{user.username}</span>
           </div>
-          <span className="font-bold">{user.score}</span>
+          <span className="font-bold ml-8">{user.score}</span>
         </div>
       ))}
       

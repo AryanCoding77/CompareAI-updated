@@ -278,8 +278,8 @@ export default function LandingPage() {
             </div>
             <h2 className="text-4xl font-bold mb-4">Ready to See Who You Look Like?</h2>
             <p className="text-xl mb-8">
-              Start comparing faces today. Upload your photo and discover fascinating similarities
-              with friends, celebrities, or historical figures.
+              Start comparing faces today. Upload your photo and see who look better
+              in friends.
             </p>
             <Button 
               onClick={handleLoginClick} 

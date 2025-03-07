@@ -15,7 +15,6 @@ import { AlertCircle, Camera, User as UserIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useWebSocket } from "@/hooks/use-websocket";
 
-
 export default function HomePage() {
   const { user, logoutMutation } = useAuth();
   const [, setLocation] = useLocation();
@@ -63,17 +62,38 @@ export default function HomePage() {
     },
   });
 
-  const pendingMatches = matches?.filter(m => m.status === "pending") || [];
-  const activeMatches = matches?.filter(m => m.status === "ready") || [];
-  const completedMatches = matches?.filter(m => m.status === "completed") || [];
+  const pendingMatches = matches?.filter((m) => m.status === "pending") || [];
+  const activeMatches = matches?.filter((m) => m.status === "ready") || [];
+  const completedMatches =
+    matches?.filter((m) => m.status === "completed") || [];
+
+  const handleFeedbackClick = () => {
+    setLocation("/feedback");
+  };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Compare AI</h1>
-          <div className="flex items-center gap-4">
-            <span>Welcome, {user?.username}</span>
+    <div className="min-h-screen flex flex-col">
+      <header className="bg-background py-4 border-b">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <Camera className="w-6 h-6 text-primary" />
+            <h1 className="text-xl font-bold">Compare AI</h1>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              onClick={handleFeedbackClick}
+              className="hidden md:flex"
+            >
+              Feedback
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setLocation("/leaderboard")}
+              className="hidden md:flex"
+            >
+              Leaderboard
+            </Button>
             <Button variant="ghost" onClick={() => logoutMutation.mutate()}>
               Logout
             </Button>
@@ -102,7 +122,9 @@ export default function HomePage() {
                   <Input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setSelectedFile(e.target.files?.[0] ?? null)
+                    }
                     className="mb-2"
                   />
                   {selectedFile && (
@@ -110,14 +132,12 @@ export default function HomePage() {
                       <Alert>
                         <Camera className="h-4 w-4" />
                         <AlertTitle>Photo selected</AlertTitle>
-                        <AlertDescription>
-                          {selectedFile.name}
-                        </AlertDescription>
+                        <AlertDescription>{selectedFile.name}</AlertDescription>
                       </Alert>
                       <div className="rounded-md overflow-hidden w-32 h-32">
-                        <img 
-                          src={URL.createObjectURL(selectedFile)} 
-                          alt="Preview" 
+                        <img
+                          src={URL.createObjectURL(selectedFile)}
+                          alt="Preview"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -140,7 +160,11 @@ export default function HomePage() {
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={!selectedFile || !invitedUsername || createMatchMutation.isPending}
+                  disabled={
+                    !selectedFile ||
+                    !invitedUsername ||
+                    createMatchMutation.isPending
+                  }
                 >
                   Send Invitation
                 </Button>
@@ -166,14 +190,21 @@ export default function HomePage() {
                 variant="destructive"
                 size="sm"
                 onClick={async () => {
-                  if (confirm("Are you sure you want to delete all your matches? This cannot be undone.")) {
+                  if (
+                    confirm(
+                      "Are you sure you want to delete all your matches? This cannot be undone."
+                    )
+                  ) {
                     try {
-                      const response = await fetch("/api/matches", { 
+                      const response = await fetch("/api/matches", {
                         method: "DELETE",
-                        credentials: "include"
+                        credentials: "include",
                       });
-                      if (!response.ok) throw new Error("Failed to delete matches");
-                      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+                      if (!response.ok)
+                        throw new Error("Failed to delete matches");
+                      queryClient.invalidateQueries({
+                        queryKey: ["/api/matches"],
+                      });
                       toast({
                         title: "Success",
                         description: "All matches have been deleted",
@@ -182,7 +213,7 @@ export default function HomePage() {
                       toast({
                         title: "Error",
                         description: "Failed to delete matches",
-                        variant: "destructive"
+                        variant: "destructive",
                       });
                     }
                   }
@@ -214,7 +245,8 @@ export default function HomePage() {
                       <AlertCircle className="h-4 w-4" />
                       <AlertTitle>No pending matches</AlertTitle>
                       <AlertDescription>
-                        Start a new comparison or wait for friends to invite you.
+                        Start a new comparison or wait for friends to invite
+                        you.
                       </AlertDescription>
                     </Alert>
                   ) : (
@@ -264,6 +296,30 @@ export default function HomePage() {
           </CardContent>
         </Card>
       </main>
+
+      {/* Add a feedback button in the mobile view */}
+      <div className="md:hidden fixed bottom-4 right-4 z-10">
+        <Button
+          onClick={handleFeedbackClick}
+          className="rounded-full w-12 h-12 p-0 bg-primary hover:bg-primary/90"
+        >
+          <span className="sr-only">Feedback</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-message-square"
+          >
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </Button>
+      </div>
     </div>
   );
 }

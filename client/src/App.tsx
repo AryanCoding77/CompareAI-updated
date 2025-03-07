@@ -11,6 +11,7 @@ import MatchPage from "@/pages/match-page";
 import LeaderboardPage from "@/pages/leaderboard-page";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import LandingPage from "@/pages/landing-page";
+import FeedbackPage from "@/pages/feedback-page";
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/" component={LandingPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/feedback" component={FeedbackPage} />
       <ProtectedRoute path="/home" component={HomePage} />
       <ProtectedRoute path="/match/:id" component={MatchPage} />
       <ProtectedRoute path="/leaderboard" component={LeaderboardPage} />

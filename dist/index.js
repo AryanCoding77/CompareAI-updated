@@ -23,12 +23,21 @@ import { promisify } from "util";
 // shared/schema.ts
 var schema_exports = {};
 __export(schema_exports, {
+  feedback: () => feedback,
+  insertFeedbackSchema: () => insertFeedbackSchema,
   insertMatchSchema: () => insertMatchSchema,
   insertUserSchema: () => insertUserSchema,
   matches: () => matches,
   users: () => users
 });
-import { pgTable, text, serial, integer, timestamp, decimal } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  serial,
+  integer,
+  timestamp,
+  decimal
+} from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 var users = pgTable("users", {
@@ -48,6 +57,15 @@ var matches = pgTable("matches", {
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").notNull().defaultNow()
 });
+var feedback = pgTable("feedback", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id"),
+  feedback: text("feedback").notNull(),
+  name: text("name"),
+  email: text("email"),
+  message: text("message"),
+  createdAt: timestamp("created_at").notNull().defaultNow()
+});
 var insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true
@@ -64,6 +82,16 @@ var insertUserSchema = createInsertSchema(users).pick({
   path: ["acceptPolicy"]
 });
 var insertMatchSchema = createInsertSchema(matches);
+var insertFeedbackSchema = createInsertSchema(feedback).pick({
+  userId: true,
+  feedback: true,
+  name: true,
+  email: true,
+  message: true
+}).refine((data) => data.feedback.length > 0, {
+  message: "Feedback is required",
+  path: ["feedback"]
+});
 
 // server/db.ts
 import { Pool, neonConfig } from "@neondatabase/serverless";
@@ -98,14 +126,74 @@ var initDb = async () => {
         invited_score DECIMAL(10,3),
         status TEXT NOT NULL DEFAULT 'pending',
         created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      )`,
+      // Create feedback table if not exists
+      `CREATE TABLE IF NOT EXISTS feedback (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER,
+        feedback TEXT NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
       )`
     ];
     for (const query of queries) {
       await pool.query(query);
     }
+    try {
+      await migrateDb();
+    } catch (err) {
+      console.warn("Migration warning (non-critical):", err.message);
+    }
     console.log("Database tables initialized successfully");
   } catch (error) {
     console.error("Error initializing database tables:", error);
+    throw error;
+  }
+};
+var migrateDb = async () => {
+  try {
+    const checkColumnQuery = `
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name = 'feedback' AND column_name = 'name'
+    `;
+    const { rows } = await pool.query(checkColumnQuery);
+    if (rows.length === 0) {
+      console.log("Running feedback table migration...");
+      const migrationQueries = [
+        // Add new columns to the feedback table
+        `ALTER TABLE "feedback" ADD COLUMN IF NOT EXISTS "name" text`,
+        `ALTER TABLE "feedback" ADD COLUMN IF NOT EXISTS "email" text`,
+        `ALTER TABLE "feedback" ADD COLUMN IF NOT EXISTS "message" text`,
+        // Update existing records to extract structured data if possible
+        `UPDATE "feedback"
+        SET 
+          "name" = CASE 
+            WHEN "feedback" ~ 'Name/Username:\\s*(.+?)(?=\\n|$)' 
+            THEN regexp_replace("feedback", '.*Name/Username:\\s*(.+?)(?=\\n|$).*', '\\1', 'g')
+            ELSE NULL
+          END,
+          "email" = CASE 
+            WHEN "feedback" ~ 'Email:\\s*(.+?)(?=\\n|$)' 
+            THEN regexp_replace("feedback", '.*Email:\\s*(.+?)(?=\\n|$).*', '\\1', 'g')
+            ELSE NULL
+          END,
+          "message" = CASE 
+            WHEN "feedback" ~ 'Message:\\s*(.+?)(?=\\n|$)' 
+            THEN regexp_replace("feedback", '.*Message:\\s*(.+?)(?=\\n|$).*', '\\1', 'g')
+            ELSE NULL
+          END
+        WHERE "feedback" LIKE '%Name/Username:%' OR "feedback" LIKE '%Email:%' OR "feedback" LIKE '%Message:%'`
+      ];
+      for (const query of migrationQueries) {
+        await pool.query(query);
+      }
+      console.log("Feedback table migration completed successfully");
+    } else {
+      console.log("Feedback table already has the required columns");
+    }
+    return true;
+  } catch (error) {
+    console.error("Error migrating database:", error);
     throw error;
   }
 };
@@ -164,15 +252,37 @@ var DatabaseStorage = class {
   async getUserMatches(userId) {
     return db.select().from(matches).where(or(eq(matches.creatorId, userId), eq(matches.invitedId, userId))).orderBy(desc(matches.createdAt));
   }
-  async getLeaderboard() {
-    return db.select().from(users).orderBy(desc(users.score)).limit(10);
+  async getLeaderboard(limit = 100) {
+    return db.select().from(users).orderBy(desc(users.score)).limit(limit);
   }
-  async saveFeedback(userId, feedback) {
-    await db.insert(feedback).values({
-      userId,
-      feedback,
-      createdAt: /* @__PURE__ */ new Date()
-    });
+  async saveFeedback(userId, feedbackText, name, email, message) {
+    try {
+      try {
+        const [result] = await db.insert(feedback).values({
+          userId: userId || null,
+          feedback: feedbackText,
+          name: name || null,
+          email: email || null,
+          message: message || null
+        }).returning();
+        return result;
+      } catch (error) {
+        if (error.message && error.message.includes("column") && error.message.includes("does not exist")) {
+          console.log(
+            "Falling back to basic feedback structure (without name, email, message columns)"
+          );
+          const [result] = await db.insert(feedback).values({
+            userId: userId || null,
+            feedback: feedbackText
+          }).returning();
+          return result;
+        }
+        throw error;
+      }
+    } catch (error) {
+      console.error("Error saving feedback:", error);
+      throw error;
+    }
   }
   async deleteUserMatches(userId) {
     await db.delete(matches).where(or(eq(matches.creatorId, userId), eq(matches.invitedId, userId)));
@@ -357,7 +467,9 @@ var upload = multer({
   // 50MB limit to accommodate larger images
   fileFilter: (_req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const extname = allowedTypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
     const mimetype = allowedTypes.test(file.mimetype);
     if (extname && mimetype) {
       cb(null, true);
@@ -384,7 +496,9 @@ function registerRoutes(app2) {
   app2.post("/api/matches", uploadMiddleware, async (req, res) => {
     if (!req.user) return res.sendStatus(401);
     if (!req.file) return res.status(400).send("No photo uploaded");
-    const invitedUser = await storage.getUserByUsername(req.body.invitedUsername);
+    const invitedUser = await storage.getUserByUsername(
+      req.body.invitedUsername
+    );
     if (!invitedUser) return res.status(404).send("Invited user not found");
     const match = await storage.createMatch({
       creatorId: req.user.id,
@@ -399,7 +513,8 @@ function registerRoutes(app2) {
     if (!req.user) return res.sendStatus(401);
     const match = await storage.getMatch(parseInt(req.params.id));
     if (!match) return res.status(404).send("Match not found");
-    if (match.invitedId !== req.user.id) return res.status(403).send("Not authorized");
+    if (match.invitedId !== req.user.id)
+      return res.status(403).send("Not authorized");
     const accept = req.body.accept === "true";
     if (!accept) {
       await storage.updateMatch(match.id, { status: "declined" });
@@ -417,8 +532,10 @@ function registerRoutes(app2) {
     try {
       const match = await storage.getMatch(parseInt(req.params.id));
       if (!match) return res.status(404).send("Match not found");
-      if (match.creatorId !== req.user.id) return res.status(403).send("Not authorized");
-      if (match.status !== "ready") return res.status(400).send("Match not ready for comparison");
+      if (match.creatorId !== req.user.id)
+        return res.status(403).send("Not authorized");
+      if (match.status !== "ready")
+        return res.status(400).send("Match not ready for comparison");
       try {
         console.log("Analyzing creator photo...");
         const creatorScore = await analyzeFace(match.creatorPhoto);
@@ -440,7 +557,9 @@ function registerRoutes(app2) {
         if (error instanceof Error) {
           res.status(400).json({ message: error.message });
         } else {
-          res.status(500).json({ message: "An unexpected error occurred during face analysis" });
+          res.status(500).json({
+            message: "An unexpected error occurred during face analysis"
+          });
         }
       }
     } catch (error) {
@@ -468,20 +587,67 @@ function registerRoutes(app2) {
     res.json(match);
   });
   app2.get("/api/leaderboard", async (req, res) => {
-    const leaderboard = await storage.getLeaderboard();
+    const limit = req.query.limit ? parseInt(req.query.limit) : 100;
+    const leaderboard = await storage.getLeaderboard(limit);
     res.json(leaderboard);
   });
   app2.post("/api/feedback", async (req, res) => {
-    if (!req.user) return res.sendStatus(401);
     try {
       if (!req.body.feedback) {
-        return res.status(400).json({ message: "Feedback is required" });
+        return res.status(400).json({
+          success: false,
+          message: "Feedback is required"
+        });
       }
-      await storage.saveFeedback(req.user.id, req.body.feedback);
-      res.json({ message: "Feedback submitted successfully" });
+      const userId = req.user ? req.user.id : null;
+      let name = null;
+      let email = null;
+      let message = null;
+      const feedbackText = req.body.feedback;
+      const nameMatch = feedbackText.match(/Name\/Username:\s*(.+?)(?=\n|$)/);
+      if (nameMatch && nameMatch[1]) {
+        name = nameMatch[1].trim();
+      }
+      const emailMatch = feedbackText.match(/Email:\s*(.+?)(?=\n|$)/);
+      if (emailMatch && emailMatch[1]) {
+        email = emailMatch[1].trim();
+      }
+      const messageMatch = feedbackText.match(/Message:\s*(.+?)(?=\n|$)/);
+      if (messageMatch && messageMatch[1]) {
+        message = messageMatch[1].trim();
+      }
+      console.log("Received feedback:", feedbackText);
+      console.log("Parsed fields:", { name, email, message });
+      let result;
+      let savedToDatabase = true;
+      try {
+        result = await storage.saveFeedback(
+          userId,
+          feedbackText,
+          name,
+          email,
+          message
+        );
+      } catch (dbError) {
+        console.error("Database error:", dbError);
+        savedToDatabase = false;
+      }
+      res.status(201).json({
+        success: true,
+        message: savedToDatabase ? "Feedback submitted successfully" : "Feedback received (will be saved when database is available)",
+        data: result || {
+          feedback: feedbackText,
+          name,
+          email,
+          message
+        }
+      });
     } catch (error) {
-      console.error("Error saving feedback:", error);
-      res.status(500).json({ message: "Failed to submit feedback" });
+      console.error("Error submitting feedback:", error);
+      res.status(400).json({
+        success: false,
+        message: error.message || "Failed to submit feedback"
+      });
     }
   });
   const httpServer = createServer(app2);

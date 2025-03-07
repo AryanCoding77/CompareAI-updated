@@ -1,4 +1,12 @@
-import { pgTable, text, serial, integer, boolean, timestamp, decimal } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  serial,
+  integer,
+  boolean,
+  timestamp,
+  decimal,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -21,13 +29,24 @@ export const matches = pgTable("matches", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Feedback table to store user feedback
+export const feedback = pgTable("feedback", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id"),
+  feedback: text("feedback").notNull(),
+  name: text("name"),
+  email: text("email"),
+  message: text("message"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users)
   .pick({
     username: true,
     password: true,
   })
   .extend({
-    acceptPolicy: z.boolean()
+    acceptPolicy: z.boolean(),
   })
   .refine((data) => data.username.length > 0, {
     message: "Username is required",
@@ -44,6 +63,22 @@ export const insertUserSchema = createInsertSchema(users)
 
 export const insertMatchSchema = createInsertSchema(matches);
 
+// Schema for inserting feedback
+export const insertFeedbackSchema = createInsertSchema(feedback)
+  .pick({
+    userId: true,
+    feedback: true,
+    name: true,
+    email: true,
+    message: true,
+  })
+  .refine((data) => data.feedback.length > 0, {
+    message: "Feedback is required",
+    path: ["feedback"],
+  });
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type Match = typeof matches.$inferSelect;
+export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
+export type Feedback = typeof feedback.$inferSelect;

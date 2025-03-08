@@ -408,6 +408,160 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* How It Works Section */}
+      <section className="w-full py-16 bg-gradient-to-b from-white to-[#f8fafc]">
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <span className="text-[#0084ff] text-sm uppercase tracking-wider font-medium">
+              HOW IT WORKS
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2d3748] mt-2">
+              Compare Your Face in Three Steps
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* Step 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="relative bg-white rounded-xl p-6 shadow-lg border border-gray-100"
+            >
+              <div className="absolute -top-4 -left-4 w-8 h-8 bg-[#0084ff] rounded-full text-lg font-bold text-white flex items-center justify-center">
+                1
+              </div>
+              <div className="mb-4 flex justify-center">
+                <div className="w-16 h-16 bg-[#e6f2ff] rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-8 h-8 text-[#0084ff]"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M15 8V16H5V8H15ZM16 6H4C3.44772 6 3 6.44772 3 7V17C3 17.5523 3.44772 18 4 18H16C16.5523 18 17 17.5523 17 17V7C17 6.44772 16.5523 6 16 6ZM21 6H19V18H21V6Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-center text-[#2d3748] mb-2">
+                Upload Photo
+              </h3>
+              <p className="text-[#4a5568] text-center">
+                Take a selfie or upload your best photo
+              </p>
+            </motion.div>
+
+            {/* Step 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="relative bg-white rounded-xl p-6 shadow-lg border border-gray-100"
+            >
+              <div className="absolute -top-4 -left-4 w-8 h-8 bg-[#0084ff] rounded-full text-lg font-bold text-white flex items-center justify-center">
+                2
+              </div>
+              <div className="mb-4 flex justify-center">
+                <div className="w-16 h-16 bg-[#e6f2ff] rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-8 h-8 text-[#0084ff]"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M9 15L11 17L15 13M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-center text-[#2d3748] mb-2">
+                AI Analysis
+              </h3>
+              <p className="text-[#4a5568] text-center">
+                Our AI analyzes your facial features
+              </p>
+            </motion.div>
+
+            {/* Step 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="relative bg-white rounded-xl p-6 shadow-lg border border-gray-100"
+            >
+              <div className="absolute -top-4 -left-4 w-8 h-8 bg-[#0084ff] rounded-full text-lg font-bold text-white flex items-center justify-center">
+                3
+              </div>
+              <div className="mb-4 flex justify-center">
+                <div className="w-16 h-16 bg-[#e6f2ff] rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-8 h-8 text-[#0084ff]"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M13 10V3L4 14H11V21L20 10H13Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-center text-[#2d3748] mb-2">
+                Get Results
+              </h3>
+              <p className="text-[#4a5568] text-center">
+                See how you compare and rank globally
+              </p>
+            </motion.div>
+          </div>
+
+          <motion.div
+            className="text-center mt-10"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <motion.button
+              className="bg-[#0084ff] text-white px-8 py-3 rounded-full font-medium inline-flex items-center shadow-lg"
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 20px 25px -5px rgba(0, 132, 255, 0.3)",
+              }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleLoginClick}
+            >
+              Try It Now
+              <motion.span
+                className="ml-2"
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                →
+              </motion.span>
+            </motion.button>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Leaderboard Section */}
       <section
         id="leaderboard"
@@ -773,7 +927,7 @@ export default function LandingPage() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 17.77 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
             </motion.div>
             <h2 className="text-4xl font-bold mb-4">

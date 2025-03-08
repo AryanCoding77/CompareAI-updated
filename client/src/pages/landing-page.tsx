@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { RiUserSmileLine } from "react-icons/ri";
+import { motion } from "framer-motion";
 
 export default function LandingPage() {
   const { user } = useAuth();
@@ -18,21 +19,68 @@ export default function LandingPage() {
     setLocation("/auth");
   };
 
-  const handleFeedbackClick = () => {
-    setLocation("/feedback");
+  // Animation variants
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 },
+    },
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const featureItem = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
   };
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
-      <div className="absolute bottom-0 right-0 w-full h-[40%] bg-[#f0f7ff] rounded-[50%] -z-10 translate-y-1/2 translate-x-1/4 scale-150"></div>
+      <motion.div
+        className="absolute bottom-0 right-0 w-full h-[40%] bg-[#f0f7ff] rounded-[50%] -z-10 translate-y-1/2 translate-x-1/4 scale-150"
+        initial={{ scale: 1.3 }}
+        animate={{
+          scale: [1.3, 1.4, 1.3],
+          translateY: ["50%", "48%", "50%"],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+      ></motion.div>
 
       <header className="bg-background py-4 relative z-10">
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
+          <motion.div
+            className="flex items-center space-x-2"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <RiUserSmileLine className="w-8 h-8 text-primary" />
             <h1 className="text-2xl font-bold">Compare AI</h1>
-          </div>
-          <div className="flex items-center space-x-6">
+          </motion.div>
+          <motion.div
+            className="flex items-center space-x-6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <nav className="hidden md:flex items-center space-x-6">
               <a href="#features" className="text-sm font-medium">
                 Features
@@ -40,29 +88,32 @@ export default function LandingPage() {
               <a href="#leaderboard" className="text-sm font-medium">
                 Leaderboard
               </a>
-              <Button
-                variant="ghost"
-                onClick={handleFeedbackClick}
-                className="text-sm font-medium"
-              >
-                Feedback
-              </Button>
             </nav>
-            <Button
-              onClick={handleLoginClick}
-              className="bg-[#0084ff] hover:bg-[#0068cc]"
-            >
-              Try Now
-            </Button>
-          </div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={handleLoginClick}
+                className="bg-[#0084ff] hover:bg-[#0068cc]"
+              >
+                Try Now
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </header>
 
       {/* Hero Section */}
       <main className="min-h-screen w-full flex items-center container mx-auto px-4 py-12 md:py-24">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12 w-full">
-          <div className="lg:w-1/2 px-6 md:px-10 py-8">
-            <span className="flex items-center text-[#0084ff] text-lg mb-4">
+          <motion.div
+            className="lg:w-1/2 px-6 md:px-10 py-8"
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+          >
+            <motion.span
+              className="flex items-center text-[#0084ff] text-lg mb-4"
+              variants={fadeIn}
+            >
               <svg
                 className="w-5 h-5 mr-2"
                 viewBox="0 0 24 24"
@@ -71,42 +122,82 @@ export default function LandingPage() {
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
               </svg>
               AI-Powered Face Comparison
-            </span>
-            <h1 className="text-5xl font-bold mb-8 text-[#2d3748]">
+            </motion.span>
+            <motion.h1
+              className="text-5xl font-bold mb-8 text-[#2d3748]"
+              variants={fadeIn}
+            >
               Roast or Toast?
               <br />
               <span className="text-[#0084ff]">
                 Let AI Rate Your Squad's Look
               </span>
-            </h1>
-            <p className="text-xl mb-12 max-w-2xl text-[#4a5568]">
+            </motion.h1>
+            <motion.p
+              className="text-xl mb-12 max-w-2xl text-[#4a5568]"
+              variants={fadeIn}
+            >
               Compare facial features with friends, using advanced AI
               technology. See who matches best and climb our global leaderboard.
-            </p>
-            <div className="flex space-x-4">
-              <Button
-                size="lg"
-                onClick={handleLoginClick}
-                className="bg-[#0084ff] hover:bg-[#0068cc] text-lg px-8 py-6"
+            </motion.p>
+            <motion.div className="flex space-x-4" variants={fadeIn}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Try For Free <span className="ml-2">→</span>
-              </Button>
-              <Button
-                size="lg"
-                onClick={handleLoginClick}
-                variant="outline"
-                className="text-lg px-8 py-6 border-[#0084ff] text-[#0084ff]"
+                <Button
+                  size="lg"
+                  onClick={handleLoginClick}
+                  className="bg-[#0084ff] hover:bg-[#0068cc] text-lg px-8 py-6"
+                >
+                  Try For Free{" "}
+                  <motion.span
+                    className="ml-2 inline-block"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      repeatDelay: 1,
+                    }}
+                  >
+                    →
+                  </motion.span>
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Learn More
-              </Button>
-            </div>
-          </div>
+                <Button
+                  size="lg"
+                  onClick={handleLoginClick}
+                  variant="outline"
+                  className="text-lg px-8 py-6 border-[#0084ff] text-[#0084ff]"
+                >
+                  Learn More
+                </Button>
+              </motion.div>
+            </motion.div>
+          </motion.div>
           <div className="lg:w-1/2 flex justify-center">
             {/* Hidden on mobile, visible on larger screens */}
             <div className="hidden lg:block">
-              <div
+              <motion.div
                 className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden max-w-xl"
                 style={{ width: "44vh" }}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.8,
+                  delay: 0.5,
+                  type: "spring",
+                  stiffness: 100,
+                }}
+                whileHover={{
+                  y: -10,
+                  boxShadow:
+                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                }}
               >
                 {/* Mockup UI similar to the screenshot */}
                 <div className="p-6 bg-[#f8fafc]">
@@ -141,7 +232,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -153,7 +244,13 @@ export default function LandingPage() {
         className="min-h-screen w-full flex items-center py-16 bg-gray-50"
       >
         <div className="container mx-auto px-4 w-full">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
             <span className="text-[#0084ff] text-sm uppercase tracking-wider font-medium">
               FEATURES
             </span>
@@ -164,10 +261,24 @@ export default function LandingPage() {
               Compare AI uses cutting-edge facial recognition technology to
               provide accurate, fun, and insightful comparisons.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            variants={staggerContainer}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <motion.div
+              className="bg-white p-6 rounded-lg shadow-sm border border-gray-100"
+              variants={featureItem}
+              whileHover={{
+                y: -10,
+                boxShadow:
+                  "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              }}
+            >
               <div className="w-12 h-12 bg-[#e6f2ff] rounded-lg flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6 text-[#0084ff]"
@@ -189,9 +300,17 @@ export default function LandingPage() {
                 Powered by Face++ API, our advanced AI technology analyzes
                 facial features with remarkable precision.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <motion.div
+              className="bg-white p-6 rounded-lg shadow-sm border border-gray-100"
+              variants={featureItem}
+              whileHover={{
+                y: -10,
+                boxShadow:
+                  "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              }}
+            >
               <div className="w-12 h-12 bg-[#e6f2ff] rounded-lg flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6 text-[#0084ff]"
@@ -220,9 +339,17 @@ export default function LandingPage() {
                 Compare your face with friends or anyone else to see who is more
                 attractive.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <motion.div
+              className="bg-white p-6 rounded-lg shadow-sm border border-gray-100"
+              variants={featureItem}
+              whileHover={{
+                y: -10,
+                boxShadow:
+                  "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              }}
+            >
               <div className="w-12 h-12 bg-[#e6f2ff] rounded-lg flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6 text-[#0084ff]"
@@ -244,9 +371,17 @@ export default function LandingPage() {
                 Win comparison matches to increase your score and climb the
                 rankings on our global leaderboard.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <motion.div
+              className="bg-white p-6 rounded-lg shadow-sm border border-gray-100"
+              variants={featureItem}
+              whileHover={{
+                y: -10,
+                boxShadow:
+                  "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              }}
+            >
               <div className="w-12 h-12 bg-[#e6f2ff] rounded-lg flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6 text-[#0084ff]"
@@ -255,21 +390,7 @@ export default function LandingPage() {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M12.9833 3.24167C12.8048 3.14467 12.6031 3.08333 12.3833 3.08333C11.9391 3.08333 11.5473 3.32584 11.3366 3.69167C11.2516 3.83308 11.2008 3.9985 11.2008 4.175C11.2008 4.82525 11.733 5.35 12.3833 5.35C13.0335 5.35 13.5658 4.82525 13.5658 4.175C13.5658 3.77558 13.3242 3.42674 12.9833 3.24167Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M13.5833 8.31667C13.5833 10.6167 15.4 10.6833 15.4 13.05C15.4 15.4167 10.7833 15.4167 10.7833 13.05V10.6833"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C13.5 3 14.9 3.4 16.1 4.1"
+                    d="M13 10V3L4 14H11V21L20 10H13Z"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
@@ -277,15 +398,13 @@ export default function LandingPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">
-                Continuous Innovation
-              </h3>
+              <h3 className="text-xl font-semibold mb-2">Instant Results</h3>
               <p className="text-[#4a5568]">
-                We're constantly adding new features to enhance your experience
-                and provide more insights.
+                Get immediate feedback on your comparisons with detailed
+                analysis and fun insights.
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -295,164 +414,356 @@ export default function LandingPage() {
         className="min-h-screen w-full flex items-center py-16"
       >
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-12">
-            <div className="lg:w-1/2 text-center md:text-left">
-              <span className="flex items-center text-[#0084ff] text-sm uppercase tracking-wider font-medium mx-auto md:mx-0 justify-center md:justify-start">
-                <svg
-                  className="w-4 h-4 mr-2"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                </svg>
-                Global Rankings
-              </span>
-              <h2 className="text-4xl font-bold text-[#2d3748] mt-2 mb-6">
-                Climb The Leaderboard
-              </h2>
-              <p className="text-lg mb-8 text-[#4a5568] max-w-xl mx-auto md:mx-0">
-                Win comparison matches to increase your score and rise through
-                the ranks. Compete with friends and users worldwide for the top
-                position.
-              </p>
-              <Button
-                onClick={() => {
-                  if (user) {
-                    setLocation("/leaderboard");
-                  } else {
-                    setLocation("/auth");
-                  }
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <span className="text-[#0084ff] text-sm uppercase tracking-wider font-medium">
+              LEADERBOARD
+            </span>
+            <h2 className="text-4xl font-bold text-[#2d3748] mt-2">
+              See Who's Leading the Pack
+            </h2>
+            <p className="text-[#4a5568] text-lg mt-4 max-w-2xl mx-auto">
+              Join thousands of users competing for the top spots on our global
+              leaderboard.
+            </p>
+          </motion.div>
+
+          <div className="flex flex-col lg:flex-row gap-8 items-center">
+            <motion.div
+              className="lg:w-1/2 relative"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7 }}
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              {/* Background decorative elements */}
+              <div className="absolute -z-10 top-10 -left-10 w-20 h-20 bg-[#e6f2ff] rounded-full opacity-50"></div>
+              <div className="absolute -z-10 bottom-10 -right-10 w-16 h-16 bg-[#e6f2ff] rounded-full opacity-30"></div>
+
+              <motion.h3
+                className="text-3xl font-bold mb-8 text-[#2d3748] relative inline-block"
+                whileInView={{
+                  backgroundPosition: ["0% 0%", "100% 0%"],
+                  transition: {
+                    duration: 1.5,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                  },
                 }}
-                className="inline-flex items-center px-6 py-3 bg-[#0084ff] hover:bg-[#0068cc] text-white font-medium rounded-md transition-colors"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(90deg, #2d3748, #0084ff, #2d3748)",
+                  backgroundSize: "200% 100%",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
               >
-                View Full Leaderboard
-                <svg
-                  className="ml-2 w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                How Scoring Works
+              </motion.h3>
+
+              <div className="space-y-8 relative">
+                {/* Vertical line connecting steps */}
+                <div className="absolute left-4 top-4 w-0.5 h-[calc(100%-32px)] bg-gradient-to-b from-[#0084ff] to-[#00d2ff] rounded-full"></div>
+
+                <motion.div
+                  className="flex items-start relative z-10"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  viewport={{ once: true }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                  />
-                </svg>
-              </Button>
-            </div>
-
-            <div className="lg:w-2/5 bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-              <div className="flex items-center mb-6">
-                <svg
-                  className="w-5 h-5 text-[#0084ff] mr-2"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                  />
-                </svg>
-                <h3 className="text-lg font-semibold">Top Performers</h3>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-                  <div className="flex items-center">
-                    <div className="bg-[#0084ff] text-white w-7 h-7 rounded-full flex items-center justify-center mr-3">
-                      1
-                    </div>
-                    <span className="font-medium">Alex Johnson</span>
-                  </div>
-                  <span className="text-[#0084ff] font-bold ml-8">
-                    2864 pts
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-                  <div className="flex items-center">
-                    <div className="bg-gray-200 text-gray-700 w-7 h-7 rounded-full flex items-center justify-center mr-3">
-                      2
-                    </div>
-                    <span className="font-medium">Jamie Smith</span>
-                  </div>
-                  <span className="text-[#0084ff] font-bold ml-8">
-                    2731 pts
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-                  <div className="flex items-center">
-                    <div className="bg-gray-200 text-gray-700 w-7 h-7 rounded-full flex items-center justify-center mr-3">
-                      3
-                    </div>
-                    <span className="font-medium">Taylor Wilson</span>
-                  </div>
-                  <span className="text-[#0084ff] font-bold ml-8">
-                    2603 pts
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-                  <div className="flex items-center">
-                    <div className="bg-gray-200 text-gray-700 w-7 h-7 rounded-full flex items-center justify-center mr-3">
-                      4
-                    </div>
-                    <span className="font-medium">Morgan Lee</span>
-                  </div>
-                  <span className="text-[#0084ff] font-bold ml-8">
-                    2547 pts
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-                  <div className="flex items-center">
-                    <div className="bg-gray-200 text-gray-700 w-7 h-7 rounded-full flex items-center justify-center mr-3">
-                      5
-                    </div>
-                    <span className="font-medium">Casey Brown</span>
-                  </div>
-                  <span className="text-[#0084ff] font-bold ml-8">
-                    2433 pts
-                  </span>
-                </div>
-
-                <div className="text-right mt-4">
-                  <a
-                    href="/leaderboard"
-                    className="text-[#0084ff] text-sm font-medium inline-flex items-center"
+                  <motion.div
+                    className="bg-gradient-to-r from-[#0084ff] to-[#00a3ff] rounded-full w-9 h-9 flex items-center justify-center text-white font-bold mr-5 flex-shrink-0 shadow-lg"
+                    whileHover={{
+                      scale: 1.1,
+                      boxShadow: "0 0 15px rgba(0, 132, 255, 0.5)",
+                    }}
                   >
-                    See Your Ranking
-                    <svg
-                      className="ml-1 w-3 h-3"
-                      fill="none"
+                    1
+                  </motion.div>
+                  <div className="bg-white p-4 rounded-lg shadow-md border border-gray-100 w-[85%] transform transition-all hover:-translate-y-1 hover:shadow-lg">
+                    <div className="flex items-center mb-2">
+                      <svg
+                        className="w-5 h-5 text-[#0084ff] mr-2"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M4 16L8.586 11.414C8.96106 11.0391 9.46967 10.8284 10 10.8284C10.5303 10.8284 11.0389 11.0391 11.414 11.414L16 16M14 14L15.586 12.414C15.9611 12.0391 16.4697 11.8284 17 11.8284C17.5303 11.8284 18.0389 12.0391 18.414 12.414L20 14M14 8H14.01M6 20H18C18.5304 20 19.0391 19.7893 19.4142 19.4142C19.7893 19.0391 20 18.5304 20 18V6C20 5.46957 19.7893 4.96086 19.4142 4.58579C19.0391 4.21071 18.5304 4 18 4H6C5.46957 4 4.96086 4.21071 4.58579 4.58579C4.21071 4.96086 4 5.46957 4 6V18C4 18.5304 4.21071 19.0391 4.58579 19.4142C4.96086 19.7893 5.46957 20 6 20Z"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <h4 className="font-bold text-lg text-[#2d3748]">
+                        Upload Your Photo
+                      </h4>
+                    </div>
+                    <p className="text-[#4a5568] ml-7">
+                      Start by uploading a clear photo of your face to begin the
+                      comparison process.
+                    </p>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="flex items-start relative z-10"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  viewport={{ once: true }}
+                >
+                  <motion.div
+                    className="bg-gradient-to-r from-[#0084ff] to-[#00a3ff] rounded-full w-9 h-9 flex items-center justify-center text-white font-bold mr-5 flex-shrink-0 shadow-lg"
+                    whileHover={{
+                      scale: 1.1,
+                      boxShadow: "0 0 15px rgba(0, 132, 255, 0.5)",
+                    }}
+                  >
+                    2
+                  </motion.div>
+                  <div className="bg-white p-4 rounded-lg shadow-md border border-gray-100 w-[85%] transform transition-all hover:-translate-y-1 hover:shadow-lg">
+                    <div className="flex items-center mb-2">
+                      <svg
+                        className="w-5 h-5 text-[#0084ff] mr-2"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <h4 className="font-bold text-lg text-[#2d3748]">
+                        Win Comparisons
+                      </h4>
+                    </div>
+                    <p className="text-[#4a5568] ml-7">
+                      Each time your photo wins in a comparison, you earn points
+                      based on the match quality.
+                    </p>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="flex items-start relative z-10"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  <motion.div
+                    className="bg-gradient-to-r from-[#0084ff] to-[#00a3ff] rounded-full w-9 h-9 flex items-center justify-center text-white font-bold mr-5 flex-shrink-0 shadow-lg"
+                    whileHover={{
+                      scale: 1.1,
+                      boxShadow: "0 0 15px rgba(0, 132, 255, 0.5)",
+                    }}
+                  >
+                    3
+                  </motion.div>
+                  <div className="bg-white p-4 rounded-lg shadow-md border border-gray-100 w-[85%] transform transition-all hover:-translate-y-1 hover:shadow-lg">
+                    <div className="flex items-center mb-2">
+                      <svg
+                        className="w-5 h-5 text-[#0084ff] mr-2"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M13 7H21M13 17H21M13 12H21M6 7V17M6 7L3 10M6 7L9 10"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <h4 className="font-bold text-lg text-[#2d3748]">
+                        Climb the Ranks
+                      </h4>
+                    </div>
+                    <p className="text-[#4a5568] ml-7">
+                      As you accumulate points, you'll rise through the ranks on
+                      our global leaderboard.
+                    </p>
+                  </div>
+                </motion.div>
+              </div>
+
+              <motion.div
+                className="mt-8 flex justify-center lg:justify-start"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.7 }}
+                viewport={{ once: true }}
+              >
+                <motion.button
+                  className="bg-gradient-to-r from-[#0084ff] to-[#00a3ff] text-white px-6 py-3 rounded-full font-medium flex items-center shadow-md"
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: "0 10px 15px -3px rgba(0, 132, 255, 0.3)",
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleLoginClick}
+                >
+                  Start Earning Points
+                  <svg
+                    className="ml-2 w-5 h-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5 12H19M19 12L12 5M19 12L12 19"
                       stroke="currentColor"
-                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </motion.button>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              className="lg:w-1/2 bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold">Top Ranked Users</h3>
+                  <span className="text-sm text-[#0084ff]">This Week</span>
+                </div>
+
+                <div className="space-y-3">
+                  <motion.div
+                    className="flex items-center justify-between p-3 bg-[#f0f7ff] rounded-md"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  >
+                    <div className="flex items-center">
+                      <div className="bg-[#0084ff] text-white w-7 h-7 rounded-full flex items-center justify-center mr-3">
+                        1
+                      </div>
+                      <span className="font-medium">Alex Johnson</span>
+                    </div>
+                    <span className="text-[#0084ff] font-bold ml-8">
+                      3842 pts
+                    </span>
+                  </motion.div>
+
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                    <div className="flex items-center">
+                      <div className="bg-gray-200 text-gray-700 w-7 h-7 rounded-full flex items-center justify-center mr-3">
+                        2
+                      </div>
+                      <span className="font-medium">Jamie Smith</span>
+                    </div>
+                    <span className="text-[#0084ff] font-bold ml-8">
+                      2731 pts
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                    <div className="flex items-center">
+                      <div className="bg-gray-200 text-gray-700 w-7 h-7 rounded-full flex items-center justify-center mr-3">
+                        3
+                      </div>
+                      <span className="font-medium">Taylor Wilson</span>
+                    </div>
+                    <span className="text-[#0084ff] font-bold ml-8">
+                      2603 pts
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                    <div className="flex items-center">
+                      <div className="bg-gray-200 text-gray-700 w-7 h-7 rounded-full flex items-center justify-center mr-3">
+                        4
+                      </div>
+                      <span className="font-medium">Morgan Lee</span>
+                    </div>
+                    <span className="text-[#0084ff] font-bold ml-8">
+                      2547 pts
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                    <div className="flex items-center">
+                      <div className="bg-gray-200 text-gray-700 w-7 h-7 rounded-full flex items-center justify-center mr-3">
+                        5
+                      </div>
+                      <span className="font-medium">Casey Brown</span>
+                    </div>
+                    <span className="text-[#0084ff] font-bold ml-8">
+                      2433 pts
+                    </span>
+                  </div>
+
+                  <div className="text-right mt-4">
+                    <a
+                      href="/leaderboard"
+                      className="text-[#0084ff] text-sm font-medium inline-flex items-center"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </a>
+                      See Your Ranking
+                      <svg
+                        className="ml-1 w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Call to Action Section */}
       <section className="w-full py-16 bg-[#0084ff]">
-        <div className="container mx-auto px-4 text-center text-white">
+        <motion.div
+          className="container mx-auto px-4 text-center text-white"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true, margin: "-100px" }}
+        >
           <div className="max-w-3xl mx-auto">
-            <div className="mb-6">
+            <motion.div
+              className="mb-6"
+              animate={{
+                rotate: [0, 10, 0, -10, 0],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                repeatType: "reverse",
+              }}
+            >
               <svg
                 className="w-8 h-8 mx-auto text-white"
                 viewBox="0 0 24 24"
@@ -464,7 +775,7 @@ export default function LandingPage() {
               >
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
-            </div>
+            </motion.div>
             <h2 className="text-4xl font-bold mb-4">
               Ready to See Who You Look Like?
             </h2>
@@ -472,31 +783,39 @@ export default function LandingPage() {
               Start comparing faces today. Upload your photo and see who look
               better in friends.
             </p>
-            <Button
-              onClick={handleLoginClick}
-              className="bg-white text-[#0084ff] hover:bg-gray-100 px-6 py-3 rounded-full font-medium text-lg"
-            >
-              Get Started Free <span className="ml-1">→</span>
-            </Button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={handleLoginClick}
+                className="bg-white text-[#0084ff] hover:bg-gray-100 px-6 py-3 rounded-full font-medium text-lg"
+              >
+                Get Started Free{" "}
+                <motion.span
+                  className="ml-1 inline-block"
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1, repeat: Infinity, repeatDelay: 1 }}
+                >
+                  →
+                </motion.span>
+              </Button>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       <footer className="bg-background py-8 border-t">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <motion.div
+            className="flex flex-col md:flex-row justify-between items-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
               <RiUserSmileLine className="w-6 h-6 text-primary" />
               <span className="text-lg font-bold">Compare AI</span>
             </div>
             <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
-              <Button
-                variant="outline"
-                onClick={handleFeedbackClick}
-                className="w-full md:w-auto"
-              >
-                Give Feedback
-              </Button>
               <a
                 href="/privacy-policy"
                 className="text-sm text-muted-foreground"
@@ -504,7 +823,7 @@ export default function LandingPage() {
                 Privacy Policy
               </a>
             </div>
-          </div>
+          </motion.div>
           <div className="mt-8 text-center text-sm text-muted-foreground">
             © {new Date().getFullYear()} Compare AI. All rights reserved.
           </div>

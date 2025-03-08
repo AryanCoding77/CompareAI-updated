@@ -30,34 +30,22 @@ async function comparePasswords(supplied: string, stored: string) {
 }
 
 export function setupAuth(app: Express) {
+  // Set up the session middleware with 30-day persistence
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.REPL_ID!,
+    secret: process.env.SESSION_SECRET || process.env.REPL_ID || 'fallback-secret',
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
     cookie: {
       secure: app.get("env") === "production",
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     }
   };
 
   if (app.get("env") === "production") {
     app.set("trust proxy", 1);
   }
-
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET || 'fallback-secret',
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-      }
-    })
-  );
 
   app.use(session(sessionSettings));
   app.use(passport.initialize());

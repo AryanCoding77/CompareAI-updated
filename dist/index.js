@@ -305,33 +305,20 @@ async function comparePasswords(supplied, stored) {
 }
 function setupAuth(app2) {
   const sessionSettings = {
-    secret: process.env.REPL_ID,
+    secret: process.env.SESSION_SECRET || process.env.REPL_ID || "fallback-secret",
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
     cookie: {
       secure: app2.get("env") === "production",
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1e3
-      // 24 hours
+      maxAge: 30 * 24 * 60 * 60 * 1e3
+      // 30 days
     }
   };
   if (app2.get("env") === "production") {
     app2.set("trust proxy", 1);
   }
-  app2.use(
-    session2({
-      secret: process.env.SESSION_SECRET || "fallback-secret",
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        secure: process.env.NODE_ENV === "production",
-        httpOnly: true,
-        maxAge: 30 * 24 * 60 * 60 * 1e3
-        // 30 days
-      }
-    })
-  );
   app2.use(session2(sessionSettings));
   app2.use(passport.initialize());
   app2.use(passport.session());

@@ -1,9 +1,10 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { RiUserSmileLine } from "react-icons/ri";
 import { motion } from "framer-motion";
+import { scrollToElement } from "@/components/scrollUtils";
 
 export default function LandingPage() {
   const { user } = useAuth();
@@ -82,10 +83,24 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
           >
             <nav className="hidden md:flex items-center space-x-6">
-              <a href="#features" className="text-sm font-medium">
+              <a 
+                href="#features" 
+                className="text-sm font-medium" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToElement('features-section');
+                }}
+              >
                 Features
               </a>
-              <a href="#leaderboard" className="text-sm font-medium">
+              <a 
+                href="#leaderboard" 
+                className="text-sm font-medium"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToElement('leaderboard-section');
+                }}
+              >
                 Leaderboard
               </a>
             </nav>
@@ -240,7 +255,7 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <section
-        id="features"
+        id="features-section"
         className="min-h-screen w-full flex items-center py-16 bg-gray-50"
       >
         <div className="container mx-auto px-4 w-full">
@@ -713,7 +728,7 @@ export default function LandingPage() {
 
       {/* Leaderboard Section */}
       <section
-        id="leaderboard"
+        id="leaderboard-section"
         className="min-h-screen w-full flex items-center py-16"
       >
         <div className="container mx-auto px-4">

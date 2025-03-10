@@ -164,6 +164,19 @@ export default function LandingPage() {
                   </motion.span>
                 </Button>
               </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button
+                  size="lg"
+                  onClick={handleLoginClick}
+                  variant="outline"
+                  className="text-lg px-8 py-6 border-[#0084ff] text-[#0084ff]"
+                >
+                  Learn More
+                </Button>
+              </motion.div>
             </motion.div>
           </motion.div>
           <div className="lg:w-1/2 flex justify-center">
@@ -408,6 +421,154 @@ export default function LandingPage() {
             <span className="text-[#0084ff] text-sm uppercase tracking-wider font-medium">
               HOW IT WORKS
             </span>
+
+      {/* Testimonials Section */}
+      <section className="w-full py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <span className="text-[#0084ff] text-sm uppercase tracking-wider font-medium">
+              TESTIMONIALS
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2d3748] mt-2">
+              What Our Users Say
+            </h2>
+            <p className="text-[#4a5568] text-lg mt-4 max-w-2xl mx-auto">
+              See how Compare AI is changing the way people connect and compete with friends.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <motion.div
+              className="bg-white p-6 rounded-lg shadow-sm border border-gray-100"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{
+                y: -10,
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              }}
+            >
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-[#e6f2ff] rounded-full flex items-center justify-center mr-3">
+                  <svg className="w-6 h-6 text-[#0084ff]" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 6h-3V4c0-1.103-.897-2-2-2H9c-1.103 0-2 .897-2 2v2H4c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2zM9 4h6v2H9V4zM4 18V8h16l.001 10H4z" fill="currentColor"/>
+                    <path d="M13 14h-2v-4h2v4z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg">Mike T.</h4>
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                      </svg>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="text-[#4a5568] mb-4">
+                "Compare AI is addictive! My friends and I have weekly competitions to see who can get the highest attractiveness score. It's become our favorite game night activity!"
+              </p>
+              <span className="text-sm text-gray-500">3 weeks ago</span>
+            </motion.div>
+
+            <motion.div
+              className="bg-white p-6 rounded-lg shadow-sm border border-gray-100"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              whileHover={{
+                y: -10,
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              }}
+            >
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-[#e6f2ff] rounded-full flex items-center justify-center mr-3">
+                  <svg className="w-6 h-6 text-[#0084ff]" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z" fill="currentColor"/>
+                    <path d="M13 7h-2v6h6v-2h-4z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg">Sarah K.</h4>
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                      </svg>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="text-[#4a5568] mb-4">
+                "The facial analysis is surprisingly accurate! I love seeing the detailed breakdowns of facial features and how they compare. It's both fun and fascinating at the same time."
+              </p>
+              <span className="text-sm text-gray-500">1 month ago</span>
+            </motion.div>
+
+            <motion.div
+              className="bg-white p-6 rounded-lg shadow-sm border border-gray-100"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              viewport={{ once: true }}
+              whileHover={{
+                y: -10,
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              }}
+            >
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-[#e6f2ff] rounded-full flex items-center justify-center mr-3">
+                  <svg className="w-6 h-6 text-[#0084ff]" viewBox="0 0 24 24" fill="none">
+                    <path d="M19 2H5c-1.103 0-2 .897-2 2v16c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2zM5 20V4h14l.002 16H5z" fill="currentColor"/>
+                    <path d="M7 12h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8-4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg">David R.</h4>
+                  <div className="flex">
+                    {[...Array(4)].map((_, i) => (
+                      <svg key={i} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                      </svg>
+                    ))}
+                    <svg className="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <p className="text-[#4a5568] mb-4">
+                "I've been trying to climb the leaderboard for weeks! The competitive aspect is what keeps me coming back. It's a fun way to engage with friends and see how we all rank."
+              </p>
+              <span className="text-sm text-gray-500">2 months ago</span>
+            </motion.div>
+          </div>
+
+          <motion.div 
+            className="text-center mt-10"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <a href="#" className="inline-flex items-center text-[#0084ff] font-medium hover:underline">
+              See more testimonials
+              <svg className="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </a>
+          </motion.div>
+        </div>
+      </section>
 
             <h2 className="text-3xl md:text-4xl font-bold text-[#2d3748] mt-2">
               Compare Your Face in Three Steps

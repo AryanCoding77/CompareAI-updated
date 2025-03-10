@@ -117,7 +117,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <main className="min-h-screen w-full flex items-center container mx-auto px-4 py-12 md:py-24">
+      <main id="hero-section" className="min-h-screen w-full flex items-center container mx-auto px-4 py-12 md:py-24">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12 w-full">
           <motion.div
             className="lg:w-1/2 px-6 md:px-10 py-8"

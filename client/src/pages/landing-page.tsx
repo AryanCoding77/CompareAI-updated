@@ -931,7 +931,7 @@ export default function LandingPage() {
               </svg>
             </motion.div>
             <h2 className="text-4xl font-bold mb-4">
-              Ready to See Who You Look Like?
+              Ready to See Do You Look Best In Your Squad?
             </h2>
             <p className="text-xl mb-8">
               Start comparing faces today. Upload your photo and see who look

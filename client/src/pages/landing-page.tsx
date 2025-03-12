@@ -21,7 +21,7 @@ export default function LandingPage() {
   };
 
   const handleHomeClick = () => {
-    setLocation("/");
+    setLocation("/home");
   };
 
   // Animation variants

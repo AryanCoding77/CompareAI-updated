@@ -91,7 +91,7 @@ export default function LandingPage() {
             {user ? (
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button onClick={handleHomeClick} className="bg-[#0084ff] hover:bg-[#0068cc]">
-                  Home
+                  Go to Dashboard
                 </Button>
               </motion.div>
             ) : (

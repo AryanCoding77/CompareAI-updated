@@ -1116,7 +1116,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
           >
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <<RiUserSmileLine className="w-6 h-6 text-primary" />
+              <RiUserSmileLine className="w-6 h-6 text-primary" />
               <span className="text-lg font-bold">Compare AI</span>
             </div>
             <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">

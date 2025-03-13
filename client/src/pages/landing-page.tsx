@@ -147,7 +147,7 @@ export default function LandingPage() {
               AI-Powered Face Comparison
             </motion.span>
             <motion.h1
-              className="text-5xl font-bold mb-8 text-[#2d3748]"
+              className="text-5xl md:text-6xl font-bold mb-8 text-[#2d3748]"
               variants={fadeIn}
             >
               Roast or Toast?
@@ -157,49 +157,49 @@ export default function LandingPage() {
               </span>
             </motion.h1>
             <motion.p
-              className="text-xl mb-12 max-w-2xl text-[#4a5568]"
+              className="text-xl md:text-lg mb-12 max-w-2xl text-[#4a5568]"
               variants={fadeIn}
             >
               Compare facial features with friends, using advanced AI
               technology. See who matches best and climb our global leaderboard.
             </motion.p>
-            <motion.div className="flex space-x-4" variants={fadeIn}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
+            <motion.div
+              className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4"
+              variants={fadeIn}
+            >
+              <motion.div 
+                whileHover={{ scale: 1.05 }} 
                 whileTap={{ scale: 0.95 }}
+                className="w-full sm:w-auto"
               >
                 <Button
-                  size="lg"
                   onClick={handleLoginClick}
-                  className="bg-[#0084ff] hover:bg-[#0068cc] text-lg px-8 py-6"
+                  className="bg-[#0084ff] hover:bg-[#0068cc] px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg w-full sm:w-auto"
                 >
-                  Try For Free{" "}
-                  <motion.span
-                    className="ml-2 inline-block"
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      repeatDelay: 1,
-                    }}
-                  >
-                    →
-                  </motion.span>
+                  Try For Free
                 </Button>
               </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <a href="#features-section" className="w-full sm:w-auto">
                 <Button
-                  size="lg"
-                  onClick={handleLoginClick}
-                  variant="outline"
-                  className="text-lg px-8 py-6 border-[#0084ff] text-[#0084ff]"
+                  variant="ghost"
+                  className="flex items-center justify-center px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg text-[#4a5568] hover:text-[#0084ff] w-full sm:w-auto"
                 >
                   Learn More
+                  <svg
+                    className="w-4 h-4 sm:w-5 sm:h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
                 </Button>
-              </motion.div>
+              </a>
             </motion.div>
           </motion.div>
           <div className="lg:w-1/2 flex justify-center">
@@ -679,7 +679,7 @@ export default function LandingPage() {
                   <div className="flex">
                     {[...Array(4)].map((_, i) => (
                       <svg key={i} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                       </svg>
                     ))}
                     <svg className="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
@@ -843,7 +843,7 @@ export default function LandingPage() {
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                          d="M9 12L11 14L15 10M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3Z"
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
@@ -1116,7 +1116,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
           >
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <RiUserSmileLine className="w-6 h-6 text-primary" />
+              <<RiUserSmileLine className="w-6 h-6 text-primary" />
               <span className="text-lg font-bold">Compare AI</span>
             </div>
             <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">

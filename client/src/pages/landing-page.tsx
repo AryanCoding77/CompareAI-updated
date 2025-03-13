@@ -557,8 +557,8 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          {/* ArcadeEmbed component */}
-          <div className="mt-16">
+          {/* ArcadeEmbed component - hidden on mobile, visible on md screens and above */}
+          <div className="mt-16 hidden md:block">
             <ArcadeEmbed />
           </div>
         </div>

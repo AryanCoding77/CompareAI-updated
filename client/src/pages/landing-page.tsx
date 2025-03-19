@@ -150,7 +150,7 @@ export default function LandingPage() {
               className="text-5xl md:text-6xl font-bold mb-8 text-[#2d3748]"
               variants={fadeIn}
             >
-              Roast or Toast?
+              Who Looks Best? Let AI Decide!
               <br />
               <span className="text-[#0084ff]">
                 AI Judges Your Looks & Ranks You!

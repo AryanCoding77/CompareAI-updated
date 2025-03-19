@@ -153,7 +153,7 @@ export default function LandingPage() {
               Roast or Toast?
               <br />
               <span className="text-[#0084ff]">
-                Let AI Rate Your Squad's Look
+                AI Judges Your Looks & Ranks You!
               </span>
             </motion.h1>
             <motion.p
